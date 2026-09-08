@@ -1,12 +1,17 @@
 const path = require("path");
+const fs = require("fs/promises");
 
 const SANDBOX_ROOT = path.resolve("./sandbox");
 
-function isPathAllowed(targetPath){
-    const resolvedPath = path.resolve(targetPath);
-    return (
-        resolvedPath === SANDBOX_ROOT || resolvedPath.startsWith(SANDBOX_ROOT+path.sep)
-    );
+async function isPathAllowed(targetPath){
+    try{
+        const resolvedPath = await fs.realpath(targetPath);
+        return (
+            resolvedPath === SANDBOX_ROOT || resolvedPath.startsWith(SANDBOX_ROOT+path.sep)
+        );
+    }catch(error){
+        return false;
+    }
 }
 
 module.exports = {

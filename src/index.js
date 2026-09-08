@@ -1,8 +1,8 @@
-const { listDirectory } = require("./tools/fileSystem");
+const { listDirectory, readFile } = require("./tools/fileSystem");
 
 async function main() {
     console.log(
-        await listDirectory("./sandbox/")
+        await readFile("./sandbox/Documents/test.txt")
     );
 }
 
