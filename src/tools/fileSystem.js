@@ -3,7 +3,7 @@ const path = require("path");
 const { isPathAllowed } = require("../security/policy");
 const MAX_READ_SIZE = 1024 * 1024 * 5;
 
-async function listDirectory(directory) {
+async function listDirectory({directory}) {
     await validatePath(directory);
     const files = await fs.readdir(directory, {
         withFileTypes: true
@@ -16,7 +16,7 @@ async function listDirectory(directory) {
 
 }
 
-async function getFileInfo(filePath) {
+async function getFileInfo({filePath}) {
     await validatePath(filePath);
     const stats = await fs.stat(filePath);
 
@@ -28,7 +28,7 @@ async function getFileInfo(filePath) {
     };
 }
 
-async function searchFiles(directory, query) {
+async function searchFiles({ directory, query }) {
     await validatePath(directory);
     const entries = await fs.readdir(directory, {
         withFileTypes: true
@@ -37,7 +37,10 @@ async function searchFiles(directory, query) {
     for(const entry of entries){
         const fullPath = path.join(directory, entry.name);
         if(entry.isDirectory()){
-            const nestedResults = await searchFiles(fullPath, query);
+            const nestedResults = await searchFiles({
+                directory: fullPath,
+                query: query
+            });
             results.push(...nestedResults);
         }else if(entry.name.toLowerCase().includes(query.toLowerCase())){
             results.push(fullPath);
@@ -55,7 +58,7 @@ async function validatePath(targetPath) {
     }
 }
 
-async function readFile(filePath) {
+async function readFile({filePath}) {
     await validatePath(filePath);
     
     const stats = await fs.stat(filePath);

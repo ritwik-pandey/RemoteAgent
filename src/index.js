@@ -1,9 +1,16 @@
-const { listDirectory, readFile } = require("./tools/fileSystem");
+const { executeTool } = require("./agent/toolExecuter");
 
 async function main() {
-    console.log(
-        await readFile("./sandbox/Documents/test.txt")
+
+    const result = await executeTool(
+        "search_files",
+        {
+            directory: "./sandbox",
+            query: "test.txt"
+        }
     );
+
+    console.log(result);
 }
 
 main();
