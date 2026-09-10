@@ -1,16 +1,19 @@
-const { executeTool } = require("./agent/toolExecuter");
+const readline = require("readline");
+const { processRequest } = require("./llm/service");
 
-async function main() {
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
-    const result = await executeTool(
-        "search_files",
-        {
-            directory: "./sandbox",
-            query: "test.txt"
-        }
-    );
+rl.question("What do you want me to do? ", async (userInput) => {
+  try {
+    const result = await processRequest(userInput);
 
-    console.log(result);
-}
-
-main();
+    console.log("\nAssistant:", result);
+  } catch (error) {
+    console.error("\nError:", error.message);
+  } finally {
+    rl.close();
+  }
+});
